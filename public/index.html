@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Contact list module</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" >
+</head>
+<body ng-app="cList">
+<div ng-controller="cListCtrl" class="container">
+	<h1>Contact List</h1>
+	<table class="table">
+		<thead>
+			<th>Name</th>
+			<th>Email</th>
+			<th>Phone</th>
+			<th>&nbsp;</th>
+		</thead>
+		<tbody>
+		<tr>
+			<td><input class="form-control" ng-model="contact.name"></td>
+			<td><input class="form-control" ng-model="contact.email"></td>
+			<td><input class="form-control" ng-model="contact.phone" add-ifen maxlength="12"></td>
+			<td><button class="btn btn-primary" ng-click="addContact()">Add Contact</button></td>
+			<td><button class="btn btn-info" ng-click="updateContact()">Update</button>&nbsp;<button class="btn btn-info" ng-click="deselect()">Clear</button></td>
+		</tr>
+			<tr ng-repeat="contact in contactlist">
+			<td>{{contact.name}}</td>
+			<td>{{contact.email}}</td>
+			<td>{{contact.phone}}</td>
+			<td><button class="btn btn-danger" ng-click="removeContact(contact._id)">Remove</button></td>
+			<td><button class="btn btn-warning" ng-click="editContact(contact._id)">Edit</button></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+<script src="cList/app.js"></script>
+</body>
+</html>
