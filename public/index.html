@@ -4,11 +4,17 @@
 	<title>Contact list module</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" >
+	<style>
+		.table-btm{
+	      border:1px solid black;
+    }
+	</style>
 </head>
 <body ng-app="cList">
 <div ng-controller="cListCtrl" class="container">
 	<h1>Contact List</h1>
-	<table class="table">
+	<div class="container">
+	<table class="table table-hover">
 		<thead>
 			<th>Name</th>
 			<th>Email</th>
@@ -17,13 +23,33 @@
 		</thead>
 		<tbody>
 		<tr>
-			<td><input class="form-control" ng-model="contact.name"></td>
-			<td><input class="form-control" ng-model="contact.email"></td>
-			<td><input class="form-control" ng-model="contact.phone" add-ifen maxlength="12"></td>
-			<td><button class="btn btn-primary" ng-click="addContact()">Add Contact</button></td>
+		<form name="cList" ng-submit="submitForm()" ng-controller="validateCtrl" novalidate >
+			<td>
+				<div ng-class="{ 'has-error': cList.name.$invaid && (cList.name.$dirty || submitted) }">
+					<input class="form-control" ng-model="contact.name" name="name" ng-required="true" placeholder="Your name">
+					<p ng-show="cList.name.$error.required && (cList.name.$dirty || submitted)">Your Name is required</p>
+				</div>
+			</td>
+			<td>
+				<div ng-class="{ 'has-error': cList.email.$invaid && (cList.email.$dirty || submitted) }">
+					<input type="email" class="form-control" ng-model="contact.email" name="email" ng-required="true" placeholder="Your email">
+					<p ng-show="cList.email.$error.required && (cList.email.$dirty || submitted)">Your Email is required</p>
+				</div>
+				</td>
+			<td>
+				<div ng-class="{ 'has-error': cList.phone.$invaid && (cList.phone.$dirty || submitted) }">
+					<input type="text" class="form-control" ng-model="contact.phone" name="phone" ng-required="true" ng-pattern="/^[789]\d{9}$/" maxlength="10" placeholder="Your Phone Number">
+					<p ng-show="cList.phone.$error.required && (cList.phone.$dirty || submitted)">Your Phonenumber is required</p>
+				</td>
+			<td><button type="submit" class="btn btn-primary" ng-click="addContact()">Add Contact</button></td>
 			<td><button class="btn btn-info" ng-click="updateContact()">Update</button>&nbsp;<button class="btn btn-info" ng-click="deselect()">Clear</button></td>
+		</form>
+	</table>
+	<table class="table table-btm">
+		<thead></thead>
+		<tbody>
 		</tr>
-			<tr ng-repeat="contact in contactlist">
+			<tr ng-repeat="contact in contactlist | startFrom:(currentPage-1)*itemPerPage | limitTo:itemPerPage">
 			<td>{{contact.name}}</td>
 			<td>{{contact.email}}</td>
 			<td>{{contact.phone}}</td>
@@ -32,10 +58,14 @@
 			</tr>
 		</tbody>
 	</table>
+	</div>
+	<input type="button" class="btn btn-warning" value="prev" ng-click="prev()" ng-disabled="currentPage == 1"></input>
+	<input type="button" class="btn btn-warning" value="next" ng-click="next()" ng-disabled="currentPage == numberOfPages"></input>
 </div>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
 <script src="cList/app.js"></script>
+<script src="cList/controllers/validateCtrl.js"></script>
 </body>
 </html>
