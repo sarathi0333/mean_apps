@@ -1,21 +1,38 @@
-var app = angular.module('cList',[]);
+var app = angular.module('cList',['validate']);
 app.controller('cListCtrl',function ($scope,$http) {
+	$scope.itemPerPage = 4;
+	$scope.currentPage = 1;
 	
+	$scope.prev = function () {
+        $scope.currentPage = $scope.currentPage - 1;
+    };
+
+    $scope.next = function () {
+        $scope.currentPage = $scope.currentPage + 1;
+    };
+	$scope.validate = function() {
+		if($scope.contact.name =='' || $scope.contact.email == '' || $scope.contact.phone == ''){
+			return false;
+		} else {return true;}
+	}
 var refresh = function() {
 	$http.get('/contactlist').then(function(response) {
 		$scope.contactlist = response.data;
 		console.log($scope.contactlist);
 		$scope.contact = {};
+		$scope.numberOfPages = Math.round($scope.contactlist.length / $scope.itemPerPage);
 	});
 };
 
 refresh();
 	$scope.addContact = function() {
 		console.log("addContact function called")
+		if(!$scope.contact){} else {
 		$http.post('/contactlist', $scope.contact).then(function(response) {
 			console.log(response);
 			refresh();
 		});
+	}
 	}
 
 	$scope.removeContact = function(id) {
@@ -41,7 +58,19 @@ refresh();
 	$scope.deselect = function() {
 		$scope.contact = {};
 	}
+
+	 //$scope.numberOfPages = Math.round($scope.contactlist.length / $scope.itemPerPage);
 });
+
+app.filter('startFrom', function () {
+    return function (input, start) {
+         if (!input || !input.length) { return; }
+        start = +start;
+        return input.slice(start);
+
+    }
+});
+
 app.directive('addIfen', function() {
 	return{
 		restrict:"A",
